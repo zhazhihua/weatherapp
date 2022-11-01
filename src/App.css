@@ -1,0 +1,19 @@
+.App{
+  height: 100vh;
+  background-image: linear-gradient(to bottom, rgb(75, 86, 98) , rgb(165,183,200));
+}
+.location{
+  padding-top: 10px;
+  padding-left: 10px;
+}
+.temperature{
+  position: relative;
+  height: 200px;
+}
+.temperature span{
+  position: absolute;
+  line-height: 200px;
+  font-size: 80px;
+  left: 50vw;
+  transform: translate(-50%);
+}
