@@ -11,6 +11,12 @@ function App() {
       <div className='temperature'>
         <span>16°</span>
       </div>
+      <div className='wind'>
+        <span>阴&nbsp;&nbsp;|&nbsp;&nbsp;北风三级</span>
+      </div>
+      <div className='green'>
+        9优
+      </div>
     </div>
   );
 }
