@@ -4,31 +4,27 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import locationImg from './images/location.png'
 function Home(props) {
-    const [nowWeather, setnowWeather] = useState({})
+    const [nowWeather,setnowWeather] = useState({})
     function getTodayWeatherData(city) {
-        axios.get(`https://devapi.qweather.com/v7/weather/24h?location=${city}&key=2daf467fb78c464099b517c36df98d90`)
+        axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B`)
             .then(res => {
-                console.log(res.data.hourly);
+                console.log(res.data);
             })
     }
     function getNowWeatherData(city) {
-        axios.get(`https://devapi.qweather.com/v7/weather/now?location=${city}&key=2daf467fb78c464099b517c36df98d90`)
+        axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
             .then(res => {
-                //console.log(res.data.now);
-                setnowWeather(nowWeather=>res.data.now)
-                console.log(nowWeather);
+                console.log(res.data);
+                setnowWeather(res.data)
             })
     }
     function goselectCity() {
+        getTodayWeatherData();
+        //getNowWeatherData('南昌');
         props.history.push('/city')
     }
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
-    };
     const chartRef = useRef(null);
     useEffect(() => {
-        //getTodayWeatherData(101010100);
-        //getNowWeatherData(101010100);
         let chartInstance = echarts.init(chartRef.current);
         const option = {
             xAxis: {
@@ -77,16 +73,16 @@ function Home(props) {
                 <span>南昌</span><img src={locationImg} alt="" />
             </div>
             <div className='temperature'>
-                <span>16°</span>
+                <span>{nowWeather.tem}°</span>
             </div>
             <div className='wind'>
-                <span>阴&nbsp;&nbsp;|&nbsp;&nbsp;北风三级</span>
+                <span>{nowWeather.wea}&nbsp;&nbsp;|&nbsp;&nbsp;{nowWeather.win}{nowWeather.win_speed}</span>
             </div>
             <div className='air'>
-                9优
+                {nowWeather.air_pm25}{nowWeather.air_level}
             </div>
             <p className='todayWeather'>
-                今天阴转多云 14至20℃ 北风4-5级
+                今天:阴转多云 {nowWeather.tem2}至{nowWeather.tem1}℃ 北风4-5级
                 <select>
                     <option value="1">1</option>
                     <option value="2">2</option>
