@@ -7,7 +7,7 @@ function App() {
     <div>
       <Route exact path="/home" component={Home}/>
       <Route path="/city" component={City}/>
-      <Redirect exact from="/" to="/home"/>
+      <Redirect exact from="/" to="home"/>
     </div>
   );
 }
