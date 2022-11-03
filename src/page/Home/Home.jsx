@@ -11,48 +11,13 @@ function Home(props) {
     const [city,setcity] = useState('南昌')
     const [dayforecast,setdayforecast] = useState(0)
     const [count,setcount] = useState(0)
-    function changeForecast(e){
-        setdayforecast(e.target.value)
-        setcount(0)
-        getWeatherData()
-    }
-    function getWeatherData() {
-        console.log(dayforecast)
-        axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
-            .then(res => {
-                if(dayforecast == 1) {
-                    sethours(res.data.month.slice(0,5))
-                    setmonth(res.data.month.slice(0,5))
-                }else{
-                    sethours(res.data.hours.slice(0,5))
-                    setmonth(res.data.month.slice(0,5))
-                }
-            })
-    }
-    function getNowWeatherData() {
-        axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
-            .then(res => {
-                //console.log(res.data);
-                setnowWeather(res.data)
-            })
-    }
-    function goselectCity() {
-        props.history.push('/city')
-    }
-    const chartRef = useRef(null);
-    useEffect(() => {
-        console.log(props)
-        setcount(count+1)
-        if(count<1){
-            getWeatherData();
-            getNowWeatherData();
-        }
+    function showecharts(){
         let chartInstance = echarts.init(chartRef.current);
         const option = {
             xAxis: {
                 type: 'category',
                 data: hours.map((item)=>{
-                    return dayforecast?item.date.slice(5):item.time
+                    return dayforecast?(item.date || '').slice(5):item.time
                 }),
                 axisTick: {
                     show: false
@@ -71,7 +36,7 @@ function Home(props) {
             series: [
                 {
                     data: hours.map((item)=>{
-                        return dayforecast?'16':item.tem
+                        return dayforecast?(item.day || '').temperature:item.tem
                     }),
                     type: 'line',
                     label: {
@@ -92,6 +57,42 @@ function Home(props) {
             ],
         };
         chartInstance.setOption(option);
+    }
+    function changeForecast(e){
+        setdayforecast(e.target.value)
+        setcount(0)
+        getWeatherData()
+    }
+    function getWeatherData() {
+        axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
+            .then(res => {
+                if(dayforecast == 1) {
+                    sethours(res.data.month.slice(0,5))
+                    setmonth(res.data.month.slice(0,5))
+                }else{
+                    sethours(res.data.hours.slice(0,5))
+                    setmonth(res.data.month.slice(0,5))
+                }
+            })
+    }
+    function getNowWeatherData() {
+        axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
+            .then(res => {
+                setnowWeather(res.data)
+            })
+    }
+    function goselectCity() {
+        props.history.push('/city')
+    }
+    const chartRef = useRef(null);
+    useEffect(() => {
+        console.log(props)
+        setcount(count+1)
+        if(count<1){
+            getWeatherData();
+            //getNowWeatherData();
+        }
+        showecharts()
     },[nowWeather,hours,month])
     return (
         <div className='Home'>
