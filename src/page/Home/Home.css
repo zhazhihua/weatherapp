@@ -13,11 +13,11 @@
   }
   .temperature{
     position: relative;
-    height: 22vh;
+    height: 18vh;
   }
   .temperature span{
     position: absolute;
-    line-height: 200px;
+    line-height: 18vh;
     font-size: 80px;
     left: 50vw;
     transform: translate(-50%);
@@ -46,8 +46,8 @@
   }
   .date{
     background-color: #fff;
-    height: 17vh;
-    padding-top: 20px;
+    height: 14vh;
+    padding-top: 18px;
   }
   .date ul li{
     float: left;
@@ -61,11 +61,28 @@
   .todayWeather{
     font-size: 12px;
     margin-top: 20px;
-    margin-bottom: -30px;
     padding-left: 10px;
   }
   .todayWeather select{
-    margin-left: 50px;
-    width: 50px;
-    background-color: rgba(255, 255, 255,0.8);
+    margin-left: 65px;
+    width: 90px;
+    height: 20px;
+    background-color: rgb(176, 189, 203);
+    border-radius: 20px;
+    font-size: 2px;
+    border: none;
+    outline: none;
   }
+  .todayWeather div{
+    position: relative;
+  }
+  /* .todayWeather div::after{
+    position: absolute;
+    content: "";
+    width: 16px;
+    height: 16px;
+    right: 3px;
+    top: 2px;
+    background-image: url(./images/select.png);
+
+  } */

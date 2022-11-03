@@ -3,33 +3,56 @@ import * as echarts from 'echarts'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import locationImg from './images/location.png'
+
 function Home(props) {
     const [nowWeather,setnowWeather] = useState({})
-    function getTodayWeatherData(city) {
-        axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B`)
+    const [hours,sethours] = useState([])
+    const [month,setmonth] = useState([])
+    const [city,setcity] = useState('南昌')
+    const [dayforecast,setdayforecast] = useState(0)
+    const [count,setcount] = useState(0)
+    function changeForecast(e){
+        setdayforecast(e.target.value)
+        getWeatherData()
+    }
+    function getWeatherData() {
+        console.log(dayforecast)
+        axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
             .then(res => {
-                console.log(res.data);
+                if(dayforecast === 1) {
+                    sethours(res.data.month.slice(0,5))
+                    setmonth(res.data.month.slice(0,5))
+                }else{
+                    sethours(res.data.hours.slice(0,5))
+                    setmonth(res.data.month.slice(0,5))
+                }
+                
             })
     }
-    function getNowWeatherData(city) {
+    function getNowWeatherData() {
         axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v61&appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
             .then(res => {
-                console.log(res.data);
+                //console.log(res.data);
                 setnowWeather(res.data)
             })
     }
     function goselectCity() {
-        getTodayWeatherData();
-        //getNowWeatherData('南昌');
         props.history.push('/city')
     }
     const chartRef = useRef(null);
     useEffect(() => {
+        setcount(count+1)
+        if(count<1){
+            getWeatherData();
+            getNowWeatherData();
+        }
         let chartInstance = echarts.init(chartRef.current);
         const option = {
             xAxis: {
                 type: 'category',
-                data: ['现在', '11时', '12时', '13时', '14时', '15时', '16时'],
+                data: hours.map((item)=>{
+                    return dayforecast?item.date.slice(5):item.time
+                }),
                 axisTick: {
                     show: false
                 },
@@ -46,7 +69,9 @@ function Home(props) {
             },
             series: [
                 {
-                    data: [16, 18, 18, 21, 22, 18, 15],
+                    data: hours.map((item)=>{
+                        return dayforecast?item.day.temperature:item.tem
+                    }),
                     type: 'line',
                     label: {
                         show: true,
@@ -66,7 +91,7 @@ function Home(props) {
             ],
         };
         chartInstance.setOption(option);
-    },[])
+    },[nowWeather,hours,month])
     return (
         <div className='Home'>
             <div className='location' onClick={goselectCity}>
@@ -82,36 +107,27 @@ function Home(props) {
                 {nowWeather.air_pm25}{nowWeather.air_level}
             </div>
             <p className='todayWeather'>
-                今天:阴转多云 {nowWeather.tem2}至{nowWeather.tem1}℃ 北风4-5级
-                <select>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                今天:&nbsp;&nbsp;{nowWeather.wea}&nbsp;&nbsp; {nowWeather.tem2}至{nowWeather.tem1}℃ &nbsp;&nbsp;{nowWeather.win}{nowWeather.win_speed}
+                <select onChange={changeForecast}>
+                    <option value={0}>24小时预报</option>
+                    <option value={1}>五天预报</option>
                 </select>
             </p>
             <div ref={chartRef} style={{ height: "40vh" }}></div>
             <div className='date'>
                 <ul>
-                    <li>
-                        <p>昨天</p>
-                        <p>10/08</p>
-                    </li>
-                    <li>
-                        <p>今天</p>
-                        <p>10/08</p>
-                    </li>
-                    <li>
-                        <p>明天</p>
-                        <p>10/08</p>
-                    </li>
-                    <li>
-                        <p>周二</p>
-                        <p>10/08</p>
-                    </li>
-                    <li>
-                        <p>周三</p>
-                        <p>10/08</p>
-                    </li>
+                    {
+                        month.map((item,index)=>{
+                            if(index === 0) item.dateOfWeek = '今天'
+                            if(index === 1) item.dateOfWeek = '明天'
+                            return (
+                                <li key={index}>
+                                    <p>{item.dateOfWeek}</p>
+                                    <p>{item.date.split("-")[1] + '/' + item.date.split("-")[2]}</p>
+                                </li>
+                            )  
+                        })
+                    }
                 </ul>
             </div>
         </div>
