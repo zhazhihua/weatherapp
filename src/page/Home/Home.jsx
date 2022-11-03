@@ -13,20 +13,20 @@ function Home(props) {
     const [count,setcount] = useState(0)
     function changeForecast(e){
         setdayforecast(e.target.value)
+        setcount(0)
         getWeatherData()
     }
     function getWeatherData() {
         console.log(dayforecast)
         axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
             .then(res => {
-                if(dayforecast === 1) {
+                if(dayforecast == 1) {
                     sethours(res.data.month.slice(0,5))
                     setmonth(res.data.month.slice(0,5))
                 }else{
                     sethours(res.data.hours.slice(0,5))
                     setmonth(res.data.month.slice(0,5))
                 }
-                
             })
     }
     function getNowWeatherData() {
@@ -41,6 +41,7 @@ function Home(props) {
     }
     const chartRef = useRef(null);
     useEffect(() => {
+        console.log(props)
         setcount(count+1)
         if(count<1){
             getWeatherData();
@@ -70,7 +71,7 @@ function Home(props) {
             series: [
                 {
                     data: hours.map((item)=>{
-                        return dayforecast?item.day.temperature:item.tem
+                        return dayforecast?'16':item.tem
                     }),
                     type: 'line',
                     label: {

@@ -1,9 +1,12 @@
 import './city.css'
 
-function City(){
+function City(props){
+    function changecity(e){
+        props.history.push(`/home?city=${e.target.value}`)
+    }
     return(
         <div className='City'>
-            city
+            <input type="text" onMouseLeave={changecity}/>
         </div>
     )
 }
