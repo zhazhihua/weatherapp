@@ -46,17 +46,23 @@
   }
   .date{
     background-color: #fff;
-    height: 14vh;
-    padding-top: 18px;
+    height: 16vh;
+    padding-top: 5px;
+  }
+  .date ul{
+    padding: 10px;
+    margin: 0;
   }
   .date ul li{
     float: left;
     list-style: none;
-    justify-content: space-between;
     width: 66px;
     height: 80px;
     color: #000;
     font-size: 10px;
+  }
+  .date ul li p{
+    text-align: center;
   }
   .todayWeather{
     font-size: 12px;
@@ -76,13 +82,11 @@
   .todayWeather div{
     position: relative;
   }
-  /* .todayWeather div::after{
-    position: absolute;
-    content: "";
-    width: 16px;
-    height: 16px;
-    right: 3px;
-    top: 2px;
-    background-image: url(./images/select.png);
-
-  } */
+  .pic{
+    margin-left: 20px;
+  }
+  .pic li{
+    float: left;
+    list-style: none;
+    width: 60px;
+  }

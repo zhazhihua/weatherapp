@@ -2,6 +2,7 @@ import './Home.css'
 import * as echarts from 'echarts'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+import data from '../../icon.json'
 import locationImg from './images/location.png'
 
 function Home(props) {
@@ -17,7 +18,7 @@ function Home(props) {
             xAxis: {
                 type: 'category',
                 data: hours.map((item)=>{
-                    return dayforecast?(item.date || '').slice(5):item.time
+                    return dayforecast==1?(item.date || '').slice(5):item.time
                 }),
                 axisTick: {
                     show: false
@@ -36,7 +37,7 @@ function Home(props) {
             series: [
                 {
                     data: hours.map((item)=>{
-                        return dayforecast?(item.day || '').temperature:item.tem
+                        return dayforecast == 1?(item.day || {}).temperature:item.tem
                     }),
                     type: 'line',
                     label: {
@@ -82,18 +83,17 @@ function Home(props) {
             })
     }
     function goselectCity() {
-        props.history.push('/city')
+        
     }
     const chartRef = useRef(null);
     useEffect(() => {
-        console.log(props)
         setcount(count+1)
         if(count<1){
             getWeatherData();
-            //getNowWeatherData();
+            getNowWeatherData();
         }
         showecharts()
-    },[nowWeather,hours,month])
+    },[nowWeather,hours,month,city])
     return (
         <div className='Home'>
             <div className='location' onClick={goselectCity}>
@@ -115,6 +115,14 @@ function Home(props) {
                     <option value={1}>五天预报</option>
                 </select>
             </p>
+            <ul className='pic'>
+                {
+                    hours.map((item,index)=>{
+                        return dayforecast == 1?<li className={`iconfont ${data[(item.day || {}).icon]}`} key={index}></li>:<li className={`iconfont ${data[item.icon]}`} key={index}></li>
+                    })
+                }
+            </ul>
+
             <div ref={chartRef} style={{ height: "40vh" }}></div>
             <div className='date'>
                 <ul>
@@ -126,6 +134,7 @@ function Home(props) {
                                 <li key={index}>
                                     <p>{item.dateOfWeek}</p>
                                     <p>{item.date.split("-")[1] + '/' + item.date.split("-")[2]}</p>
+                                    <p><i className={`iconfont ${data[item.day.icon]}`}></i></p>
                                 </li>
                             )  
                         })
