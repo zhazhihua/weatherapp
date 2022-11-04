@@ -1,13 +1,12 @@
 import './Home.css'
 import * as echarts from 'echarts'
 import { useEffect, useRef, useState } from 'react'
-import { AudioOutlined } from '@ant-design/icons';
-import { Select, Input, Space } from 'antd';
+import { Select, Input } from 'antd';
 import axios from 'axios'
 import data from '../../icon.json'
 import 'antd/dist/antd.css'
 
-function Home(props) {
+function Home() {
     const [nowWeather, setnowWeather] = useState({})
     const [hours, sethours] = useState([])
     const [month, setmonth] = useState([])
@@ -15,14 +14,6 @@ function Home(props) {
     const [dayforecast, setdayforecast] = useState(0)
     const [count, setcount] = useState(0)
     const { Search } = Input;
-    const suffix = (
-        <AudioOutlined
-            style={{
-                fontSize: 16,
-                color: '#1890ff',
-            }}
-        />
-    );
     const onSearch = (value) => {
         setcount(0)
         setcity(value)
@@ -136,7 +127,7 @@ function Home(props) {
                         },
                     ]}
                 />
-                <Search size='small' placeholder="输入城市" onSearch={onSearch} style={{'margin-left':'30px', width: 150,height:15 }} />
+                <Search size='small' placeholder="输入城市" onSearch={onSearch} style={{'marginLeft':'30px', width: 150,height:15 }} />
             </div>
             <div className='temperature'>
                 <span>{nowWeather.tem}°</span>

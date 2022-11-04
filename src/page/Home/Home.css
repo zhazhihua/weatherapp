@@ -13,7 +13,7 @@
   }
   .temperature{
     position: relative;
-    height: 18vh;
+    height: 20vh;
   }
   .temperature span{
     position: absolute;
