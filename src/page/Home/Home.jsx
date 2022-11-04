@@ -15,8 +15,10 @@ function Home() {
     const [count, setcount] = useState(0)
     const { Search } = Input;
     const onSearch = (value) => {
-        setcount(0)
-        setcity(value)
+        if(value){
+            setcount(0)
+            setcity(value)
+        }
     }
     function showecharts() {
         let chartInstance = echarts.init(chartRef.current);
