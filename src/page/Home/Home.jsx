@@ -1,24 +1,39 @@
 import './Home.css'
 import * as echarts from 'echarts'
 import { useEffect, useRef, useState } from 'react'
+import { AudioOutlined } from '@ant-design/icons';
+import { Select, Input, Space } from 'antd';
 import axios from 'axios'
 import data from '../../icon.json'
-import locationImg from './images/location.png'
+import 'antd/dist/antd.css'
 
 function Home(props) {
-    const [nowWeather,setnowWeather] = useState({})
-    const [hours,sethours] = useState([])
-    const [month,setmonth] = useState([])
-    const [city,setcity] = useState('南昌')
-    const [dayforecast,setdayforecast] = useState(0)
-    const [count,setcount] = useState(0)
-    function showecharts(){
+    const [nowWeather, setnowWeather] = useState({})
+    const [hours, sethours] = useState([])
+    const [month, setmonth] = useState([])
+    const [city, setcity] = useState('南昌')
+    const [dayforecast, setdayforecast] = useState(0)
+    const [count, setcount] = useState(0)
+    const { Search } = Input;
+    const suffix = (
+        <AudioOutlined
+            style={{
+                fontSize: 16,
+                color: '#1890ff',
+            }}
+        />
+    );
+    const onSearch = (value) => {
+        setcount(0)
+        setcity(value)
+    }
+    function showecharts() {
         let chartInstance = echarts.init(chartRef.current);
         const option = {
             xAxis: {
                 type: 'category',
-                data: hours.map((item)=>{
-                    return dayforecast==1?(item.date || '').slice(5):item.time
+                data: hours.map((item) => {
+                    return dayforecast == 1 ? (item.date || '').slice(5) : item.time
                 }),
                 axisTick: {
                     show: false
@@ -36,8 +51,8 @@ function Home(props) {
             },
             series: [
                 {
-                    data: hours.map((item)=>{
-                        return dayforecast == 1?(item.day || {}).temperature:item.tem
+                    data: hours.map((item) => {
+                        return dayforecast == 1 ? (item.day || {}).temperature : item.tem
                     }),
                     type: 'line',
                     label: {
@@ -59,7 +74,7 @@ function Home(props) {
         };
         chartInstance.setOption(option);
     }
-    function changeForecast(e){
+    function changeForecast(e) {
         setdayforecast(e.target.value)
         setcount(0)
         getWeatherData()
@@ -67,12 +82,12 @@ function Home(props) {
     function getWeatherData() {
         axios.get(`https://v0.yiketianqi.com/api/worldchina?appid=24831698&appsecret=p8sIVJ6B&city=${city}`)
             .then(res => {
-                if(dayforecast == 1) {
-                    sethours(res.data.month.slice(0,5))
-                    setmonth(res.data.month.slice(0,5))
-                }else{
-                    sethours(res.data.hours.slice(0,5))
-                    setmonth(res.data.month.slice(0,5))
+                if (dayforecast == 1) {
+                    sethours(res.data.month.slice(0, 5))
+                    setmonth(res.data.month.slice(0, 5))
+                } else {
+                    sethours(res.data.hours.slice(0, 5))
+                    setmonth(res.data.month.slice(0, 5))
                 }
             })
     }
@@ -82,22 +97,46 @@ function Home(props) {
                 setnowWeather(res.data)
             })
     }
-    function goselectCity() {
-        
-    }
+    const handleChange = (value) => {
+        setcount(0)
+        setcity(value)
+    };
     const chartRef = useRef(null);
     useEffect(() => {
-        setcount(count+1)
-        if(count<1){
+        setcount(count + 1)
+        if (count < 1) {
             getWeatherData();
             getNowWeatherData();
         }
         showecharts()
-    },[nowWeather,hours,month,city])
+    }, [nowWeather, hours, month, city])
     return (
         <div className='Home'>
-            <div className='location' onClick={goselectCity}>
-                <span>南昌</span><img src={locationImg} alt="" />
+            <div className='location'>
+                <Select
+                    size='small'
+                    bordered={false}
+                    defaultValue="南昌"
+                    style={{
+                        width: 120,
+                    }}
+                    onChange={handleChange}
+                    options={[
+                        {
+                            value: '南昌',
+                            label: '南昌',
+                        },
+                        {
+                            value: '上海',
+                            label: '上海',
+                        },
+                        {
+                            value: '北京',
+                            label: '北京',
+                        },
+                    ]}
+                />
+                <Search size='small' placeholder="输入城市" onSearch={onSearch} style={{'margin-left':'30px', width: 150,height:15 }} />
             </div>
             <div className='temperature'>
                 <span>{nowWeather.tem}°</span>
@@ -117,8 +156,8 @@ function Home(props) {
             </p>
             <ul className='pic'>
                 {
-                    hours.map((item,index)=>{
-                        return dayforecast == 1?<li className={`iconfont ${data[(item.day || {}).icon]}`} key={index}></li>:<li className={`iconfont ${data[item.icon]}`} key={index}></li>
+                    hours.map((item, index) => {
+                        return dayforecast == 1 ? <li className={`iconfont ${data[(item.day || {}).icon]}`} key={index}></li> : <li className={`iconfont ${data[item.icon]}`} key={index}></li>
                     })
                 }
             </ul>
@@ -127,16 +166,16 @@ function Home(props) {
             <div className='date'>
                 <ul>
                     {
-                        month.map((item,index)=>{
-                            if(index === 0) item.dateOfWeek = '今天'
-                            if(index === 1) item.dateOfWeek = '明天'
+                        month.map((item, index) => {
+                            if (index === 0) item.dateOfWeek = '今天'
+                            if (index === 1) item.dateOfWeek = '明天'
                             return (
                                 <li key={index}>
                                     <p>{item.dateOfWeek}</p>
                                     <p>{item.date.split("-")[1] + '/' + item.date.split("-")[2]}</p>
                                     <p><i className={`iconfont ${data[item.day.icon]}`}></i></p>
                                 </li>
-                            )  
+                            )
                         })
                     }
                 </ul>
